@@ -1,0 +1,4 @@
+Phase 1:
+    Use https://realpython.com/flask-google-login/ to require google login
+    Create 
+    Create 
