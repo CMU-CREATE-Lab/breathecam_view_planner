@@ -1,4 +1,18 @@
-Phase 1:
-    Use https://realpython.com/flask-google-login/ to require google login
-    Create 
-    Create 
+Phase 2: Upload panorama and view it
+    DONE Create and serve index.html and favicon.ico
+    DONE Create layout divs and CSS
+    DONE Create main page in typescript
+    DONE Add upload button on main page
+    DONE Cancel and upload button on dialog    
+    DONE Implement upload button client side
+    Clear dialog on show
+    Implement upload panorama server side
+    Upload two panoramas
+    Create list of panoramas on main page
+    Select on list to switch panoramas
+
+Phase 3: Select panorama default orientation and create overlay polygons
+    Implement email whitelist
+
+DONE Phase 1:
+    DONE Use https://realpython.com/flask-google-login/ to require google login
