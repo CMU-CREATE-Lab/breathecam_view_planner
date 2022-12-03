@@ -13,22 +13,22 @@ from flask import abort, request, redirect
 
 from utils import epsql
 from utils.epsql import Engine
+from database import engine, User, db_session
 
 def get_google_provider_cfg():
     return requests.get("https://accounts.google.com/.well-known/openid-configuration").json()
 
 class GoogleLogin:
-    def __init__(self, engine: Engine, app: flask.Flask, login_manager):
-        self.engine = engine
+    def __init__(self, app: flask.Flask, login_manager):
         self.app = app
         self.login_manager = login_manager
 
-        self.engine.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL
-        );""")
+        # self.engine.execute("""
+        # CREATE TABLE IF NOT EXISTS users (
+        #     id TEXT PRIMARY KEY,
+        #     name TEXT NOT NULL,
+        #     email TEXT UNIQUE NOT NULL
+        # );""")
         google_client_info = json.load(open("secrets/google-oauth-client.json"))
         self.GOOGLE_CLIENT_ID = google_client_info["client_id"]
         self.GOOGLE_CLIENT_SECRET = google_client_info["client_secret"]
@@ -39,24 +39,8 @@ class GoogleLogin:
         self.login_manager.user_loader(self.get_user)
 
     def get_user(self, user_id):
-        users = self.engine.execute_returning_dicts(
-            "SELECT * FROM users WHERE id = %s", (user_id,)
-        )
-        if len(users) == 0:
-            return None
+        return User.query.get(user_id)
 
-        user = users[0]
-
-        print(user)
-
-        user = User(
-            user_id=user["id"], name=user["name"], email=user["email"]
-        )
-        return user
-
-    def create_user(self, user_id, name, email):
-        self.engine.insert("users", {"id": user_id, "name": name, "email": email})
-    
     def login(self):
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
@@ -97,6 +81,10 @@ class GoogleLogin:
             data=body,
             auth=(self.GOOGLE_CLIENT_ID, self.GOOGLE_CLIENT_SECRET),
         )
+        print("in login_callback")
+        print(token_response.status_code)
+        print(token_response.text)
+        print(token_response.json())
 
         # Parse the tokens!
         self.client.parse_request_body_response(json.dumps(token_response.json()))
@@ -120,15 +108,17 @@ class GoogleLogin:
 
         # Create a user in your db with the information provided
         # by Google
-        user = User(user_id=unique_id, name=users_name, email=users_email)
-
-        # Doesn't exist? Add it to the database.
-        if not self.get_user(unique_id):
-            print("Created new user")
-            User.create(unique_id, users_name, users_email)
-        else:
-            # TODO: should we update the user info?
+        user = self.get_user(unique_id)
+        if user:
             print("User already exists")
+            user.name = users_name
+            user.email = users_email
+            db_session.commit()
+        else:
+            print("Created new user")
+            user = User(id=unique_id, name=users_name, email=users_email)
+            db_session.add(user)
+            db_session.commit()
 
         # Begin user session by logging the user in
         flask_login.login_user(user)
@@ -141,8 +131,3 @@ class GoogleLogin:
         return redirect("/")
 
 
-class User(flask_login.UserMixin):
-    def __init__(self, user_id: str, name: str, email: str):
-        self.id = user_id
-        self.name = name
-        self.email = email

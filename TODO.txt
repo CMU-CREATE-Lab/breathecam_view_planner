@@ -5,14 +5,20 @@ Phase 2: Upload panorama and view it
     DONE Add upload button on main page
     DONE Cancel and upload button on dialog    
     DONE Implement upload button client side
-    Clear dialog on show
-    Implement upload panorama server side
-    Upload two panoramas
-    Create list of panoramas on main page
-    Select on list to switch panoramas
+    DONE Clear dialog on show
+    DONE Implement upload panorama server side
+    DONE upload panorama
+    DONE Templated show logged in username
+    DONE Create list of panoramas on main page
+    DONE Select on list to switch panoramas
+    DONE Import panorama viewer
+    Serve required node modules from flask
+    Following link to pano, if login required, redirect back to that pano
 
 Phase 3: Select panorama default orientation and create overlay polygons
+
     Implement email whitelist
+    Force 2x1, >100px
 
 DONE Phase 1:
     DONE Use https://realpython.com/flask-google-login/ to require google login

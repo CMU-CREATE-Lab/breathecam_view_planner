@@ -2,5 +2,5 @@ secrets
 .venv
 node_modules
 *.pyc
-panos
+image
 compiled

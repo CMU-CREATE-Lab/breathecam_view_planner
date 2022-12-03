@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.css"/>
+
+     <script src="/dist/three-r147/three.min.js"></script>
+    <script src="/dist/uevent-2.2.0/browser.js"></script>
+    <script src="/dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+    <style>
+
+        body { 
+            margin: 0px;
+            height: 100vh;
+            background-color: pink;
+            display: flex;
+            flex-direction: column;
+        }        
+        #headerbar {
+            width: 100%;
+            background-color: black;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #mainarea {
+            width: 100%;
+            background-color: blue;
+            flex: 1;
+            display: flex;
+        }
+        #panopane {
+            flex: 1;
+            background-color: pink;
+            display: flex;
+            flex-direction: column;
+        }
+        #panoheader {
+            width: 100%;
+            background-color: red;
+            height: 40px;
+        }
+        #panoviewer {
+            width: 100%;
+            background-color: purple;
+            flex: 1;
+        }
+        #sidebar {
+            width: 200px;
+            background-color: palegreen;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .logo {
+            font-family: 'Open Sans Condensed', Helvetica, Arial, sans-serif;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 30px;
+            font-weight: 700;
+            top: auto;
+            bottom: auto;
+            display: flex;
+            margin: 7px 20px;
+        }
+        #upload {
+            margin-left: auto;
+            margin-right: 15px;
+        }
+        .dialog {
+            visibility: hidden;
+            position: absolute;
+            top: 50vh;
+            left: 50vw;
+            transform: translate(-50%, -50%);
+            border: red solid 5px;
+            border-radius: 15px;
+            padding: 20px;
+            background-color: yellow;
+            display: flex;
+            row-gap: 20px;
+            flex-direction: column;
+        }
+    </style>
+
+    <title>BreatheCam Planner</title>
+</head>
+<body>
+<div id="headerbar">
+    <div class="logo">BreatheCam Planner</div>
+    <button id="upload">Upload panorama</button>
+    <div style="margin: 20px">
+        {{ logged_in_name }}</span>&nbsp;&nbsp;
+        <a href="/logout">Log out</a>
+    </div>
+</div>
+<div id="mainarea">
+<div id="panopane">
+<div id="panoheader"></div>
+<div id="panoviewer"></div>
+</div>
+<div id="sidebar">
+    {% for pano in panoramas %}
+        <a href="{{ pano.url() }}">{{ pano.name }}</a> (id {{ pano.id }})<br>
+    {% endfor %}
+</div>
+</div>
+<div id="uploadDialog" class="dialog">
+    <div style="font-size:30px">Upload new panorama</div>
+    <div>
+        <label for="panoramaFile">Panorama image:</label>
+        <input type="file" id="panoramaFile" name="panoramaFile" accept=".jpg,.png"/>
+    </div>
+    <div>
+        <label for="uploadPanoramaName">Panorama name:</label>
+        <input type="text" id="uploadPanoramaName" name="uploadPanoramaName" required
+               minlength="4" maxlength="25" size="25"/>
+    </div>
+
+    <div style="display: flex; justify-content: space-between;">
+        <span></span>
+        <button id="uploadCancelButton">Cancel</button>
+        <button id="uploadUploadButton">Upload</button>
+        <span></span>
+    </div>
+</div>
+</body>
+<script type="module">
+    import { init } from "/dist/index.js";
+    var panorama = {{ (panorama and panorama.export_to_client())|tojson|safe }}; 
+    var yoyodyne;
+    init(panorama);
+    // async function init() {
+    //     await import("/dist/bundle.js");
+    //     console.log(index_ts_init);
+    //     index_ts_init(panorama);
+    // }
+    //init();
+    // const viewer = new PhotoSphereViewer.Viewer({
+    //   container: document.querySelector('#panoviewer'),
+    //   panorama: panorama.image_url
+    // });
+</script>
+</html>
