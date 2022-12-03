@@ -12,7 +12,6 @@ Phase 2: Upload panorama and view it
     DONE Create list of panoramas on main page
     DONE Select on list to switch panoramas
     DONE Import panorama viewer
-    Serve required node modules from flask
     Following link to pano, if login required, redirect back to that pano
 
 Phase 3: Select panorama default orientation and create overlay polygons

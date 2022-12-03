@@ -44,6 +44,7 @@ def show_test():
 @app.get("/p/<pano_id>")
 def show_panorama(pano_id = None):
     if not current_user.is_authenticated:
+        gl.set_login_redirect(request.full_path)
         return redirect("/login")
     else:
         template = jinja_env.get_template("index.html")
@@ -73,6 +74,7 @@ def compiled(path: str):
 @app.get("/image/<path:path>")
 def get_image(path: str):
     if not current_user.is_authenticated:
+        gl.set_login_redirect(request.full_path)
         return redirect("/login")
     # send_from_directory prevents attempts to traverse upwards
     return send_from_directory("image", path)

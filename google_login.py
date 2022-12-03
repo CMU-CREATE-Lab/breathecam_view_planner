@@ -7,9 +7,9 @@
 #
 # flask_logincurrent_user.is_authenticated should be true if currently logged in
 
-import flask, flask_login, json, requests
+import flask, flask_login, json, requests, urllib
 from oauthlib.oauth2 import WebApplicationClient
-from flask import abort, request, redirect
+from flask import abort, request, redirect, session
 
 from utils import epsql
 from utils.epsql import Engine
@@ -41,6 +41,9 @@ class GoogleLogin:
     def get_user(self, user_id):
         return User.query.get(user_id)
 
+    def set_login_redirect(self, url):
+        session["login_redirect"] = url
+
     def login(self):
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
@@ -50,7 +53,6 @@ class GoogleLogin:
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
         redirect_uri = f"https://{request.host}/login/callback"
-        print(redirect_uri)
         # Use library to construct the request for Google login and provide
         # scopes that let you retrieve user's profile from Google
         request_uri = self.client.prepare_request_uri(
@@ -123,8 +125,8 @@ class GoogleLogin:
         # Begin user session by logging the user in
         flask_login.login_user(user)
 
-        # Send user back to homepage
-        return redirect("/")
+        # Send user back to homepage, or "login_redirect" from session, if set
+        return redirect(session.get("login_redirect", "/"))
 
     def logout(self):
         flask_login.logout_user()

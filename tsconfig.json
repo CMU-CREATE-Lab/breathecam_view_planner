@@ -1,12 +1,14 @@
 {
-  "files":["src/index.ts"],
+  "files":[
+    "index.ts",
+  ],
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "photo-sphere-viewer": ["dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer"],
-      "three": ["dist/three-r147/three.min"],
-      "uevent": ["dist/uevent-2.2.0/browser"]
-    },
+    // "paths": {
+    //   "photo-sphere-viewer": ["dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer"],
+    //   "three": ["dist/three-r147/three.min"],
+    //   "uevent": ["dist/uevent-2.2.0/browser"]
+    // },
     "skipLibCheck": true,
     "outDir": "./dist/",
     "sourceMap": true,
@@ -14,6 +16,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "esModuleInterop": true,
-//    "typeRoots":["./dist"]
+    "allowJs": true
+    // "typeRoots":["./dist"]
   }
 }

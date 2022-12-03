@@ -1,7 +1,19 @@
+
+/// <reference path="dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js" />
+
+//import { Viewer } from "dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer";
+
+//Viewer
+
+//import { Viewer } from "../dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js";
+
+//import { Viewer } from "dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer";
+
 //import { Viewer } from 'photo-sphere-viewer';
 //import * as foo from "../dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js"
 //console.log(foo)
 //import { Viewer } from "photo-sphere-viewer"
+
 
 type UserExport = {
     id: string,
@@ -16,9 +28,6 @@ type PanoramaExport = {
     url: string,
     image_url: string
 };
-
-
-
 
 function requireElementIdType<EltType extends HTMLElement>(id: string, constructor:{new():EltType}): EltType {
     var elt = document.getElementById(id);
@@ -129,6 +138,9 @@ function readFileAsDataUrlAsync(file: File): Promise<string> {
     }
 }
 
+//var Viewer = (globalThis.PhotoSphereViewer) as Viewer["constructor"];
+
+//var PhotoSphereViewer: { Viewer: typeof Viewer};
 
 export function init(panorama : PanoramaExport | null) {
     requireElementIdType("upload", HTMLButtonElement).addEventListener("click", upload);
@@ -136,9 +148,9 @@ export function init(panorama : PanoramaExport | null) {
     if (panorama) {
         // @ts-ignore
         const viewer = new PhotoSphereViewer.Viewer({
-             container: 'panoviewer',
-             panorama: panorama.image_url
-           });
+            container: 'panoviewer',
+            panorama: panorama.image_url
+        });
       
         // var viewer = new Viewer({
         //     container: requireElementIdType("panoviewer", HTMLDivElement),
