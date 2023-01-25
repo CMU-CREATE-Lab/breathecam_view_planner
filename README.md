@@ -3,6 +3,18 @@ On hal21:
 production: port 5050
 dev: port 5051
 
+# Running dev
+
+Terminal/Run Build Task:  runs tsc in "watch" mode
+
+Using vscode: "debug" icon, then select python: flask and click green arrow "run" button
+flask run --port 5051
+
+Visit https://planner-dev.breathecam.org
+
+
+
+
 * webpack
 
 Reference: https://webpack.js.org/guides/typescript/

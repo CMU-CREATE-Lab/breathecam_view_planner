@@ -1,19 +1,8 @@
-
-/// <reference path="dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js" />
-
-//import { Viewer } from "dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer";
-
-//Viewer
-
-//import { Viewer } from "../dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js";
-
-//import { Viewer } from "dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer";
-
-//import { Viewer } from 'photo-sphere-viewer';
-//import * as foo from "../dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.js"
-//console.log(foo)
-//import { Viewer } from "photo-sphere-viewer"
-
+// We are including photo-sphere-viewer.js from index.html.  Declare the global it defines
+import { Viewer } from "dist/photo-sphere-viewer-4.8.0/photo-sphere-viewer.d";
+declare global {
+    var PhotoSphereViewer: { Viewer: typeof Viewer};
+}
 
 type UserExport = {
     id: string,
@@ -24,6 +13,15 @@ type UserExport = {
 type PanoramaExport = {
     id: number,
     name: string,
+    viewport_lat: number,
+    viewport_long: number,
+    viewport_name: number,
+    image_full_width: number,
+    image_full_height: number,
+    image_cropped_width: number,
+    image_cropped_height: number,
+    image_cropped_x: number,
+    image_cropped_y: number,
     user: UserExport,
     url: string,
     image_url: string
@@ -127,7 +125,9 @@ function readFileAsDataUrlAsync(file: File): Promise<string> {
 
             console.log(response);
             if (response && response["success"] == true) {
-                alert("Panorama uploaded successfully");
+                alert(`Panorama uploaded successfully ${response} ${JSON.stringify(response)}`);
+                console.log("after alert!");
+                window.location.replace(response.panorama.url);
                 return;
             } else {
                 alert(`Panorama not uploaded: ${JSON.stringify(response)}`);
@@ -138,36 +138,76 @@ function readFileAsDataUrlAsync(file: File): Promise<string> {
     }
 }
 
-//var Viewer = (globalThis.PhotoSphereViewer) as Viewer["constructor"];
+class FovDef {
+    Name: string;
+    Cam: string;
+    fl_mm: number;
+    overlap_px: number;
+    Cols: number;
+    Rows: number;
+    eff_x_px: number;
+    eff_y_px: number;
+    hfov_deg: number;
+    vfov_deg: number;
+    Notes: string;
+    info: string;
+};
 
-//var PhotoSphereViewer: { Viewer: typeof Viewer};
+var mPanorama : PanoramaExport | null;
 
-export function init(panorama : PanoramaExport | null) {
-    requireElementIdType("upload", HTMLButtonElement).addEventListener("click", upload);
-    console.log("the pano is", panorama);
-    if (panorama) {
-        // @ts-ignore
-        const viewer = new PhotoSphereViewer.Viewer({
-            container: 'panoviewer',
-            panorama: panorama.image_url
-        });
-      
-        // var viewer = new Viewer({
-        //     container: requireElementIdType("panoviewer", HTMLDivElement),
-        //     panorama: panorama.image_url
-        // })
-        // // @ts-ignore
-        // globalThis.viewer = viewer;
-            
-//     panorama: 'path/to/panorama.jpg',
-//   });
+async function deletePanorama(): Promise<null> {
+    let ret = confirm("Deleting panorama cannot be undone.  Are you sure you want to delete this panorama?");
+    if (!ret) return;
+    var payload = {
+        pano_id: mPanorama.id
+    };
+    console.log("deletePanorama", payload);
+    var response = await (await fetch("/delete", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })).json();
 
+    console.log(response);
+    if (response && response["success"] == true) {
+        window.location.replace("/");
+        return;
+    } else {
+        alert(`Panorama not uploaded: ${JSON.stringify(response)}`);
     }
+
+    return null;
 }
 
-// @ts-ignore
-globalThis.index_ts_init = init; 
+export function init(panorama : PanoramaExport | null, fovs: FovDef[]) {
+    mPanorama = panorama;
+    console.log(fovs);
+    requireElementIdType("upload", HTMLButtonElement).addEventListener("click", upload);
+    console.log("panorama:", panorama);
+    let panoData = {
+        fullWidth: panorama.image_full_width,
+        fullHeight: panorama.image_full_height,
+        croppedWidth: panorama.image_cropped_width,
+        croppedHeight: panorama.image_cropped_height,
+        croppedX: panorama.image_cropped_x,
+        croppedY: panorama.image_cropped_y
+    };
+    console.log("panoData:", panoData);
 
+    if (panorama) {
+        const viewer = new PhotoSphereViewer.Viewer({
+            container: 'panoviewer',
+            panorama: panorama.image_url,
+            panoData: panoData
+        });
+        requireElementIdType("panoname", HTMLSpanElement).innerText = `${panorama.name} (id ${panorama.id})`;
+        let deleteButton = requireElementIdType("delete", HTMLButtonElement);
+        deleteButton.addEventListener("click", deletePanorama);
+        deleteButton.style.display = "inline";
+    }
+}
 
 
 

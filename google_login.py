@@ -19,9 +19,10 @@ def get_google_provider_cfg():
     return requests.get("https://accounts.google.com/.well-known/openid-configuration").json()
 
 class GoogleLogin:
-    def __init__(self, app: flask.Flask, login_manager):
+    def __init__(self, app: flask.Flask, login_manager, email_whitelist: None):
         self.app = app
         self.login_manager = login_manager
+        self.email_whitelist = email_whitelist
 
         # self.engine.execute("""
         # CREATE TABLE IF NOT EXISTS users (
@@ -107,6 +108,15 @@ class GoogleLogin:
             users_name = userinfo_response.json()["given_name"]
         else:
             abort(400, "User email not available or not verified by Google.")
+
+        if self.email_whitelist:
+            if not users_email in self.email_whitelist:
+                print(f"Email address {users_email} not in whitelist; refusing login")
+                abort(400, f"Email address {users_email} not in whitelist;  please ask admin to add you.")
+            else:
+                print(f"Email address {users_email} found in whitelist.")
+        else:
+            print(f"No email whitelist; allowing {users_email}")
 
         # Create a user in your db with the information provided
         # by Google

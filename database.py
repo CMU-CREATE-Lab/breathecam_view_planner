@@ -20,10 +20,15 @@ class Panorama(Base):
     image_mime_type: str = Column(String, nullable=False)
     user_id: str = Column(String, ForeignKey("users.id"))
     user = relationship("User")
-    viewport_lat = Column(Float, default=0)
-    viewport_long = Column(Float, default=0)
-    viewport_width_deg = Column(Float, default=10)
-    viewport_height_deg = Column(Float, default=10)
+    viewport_lat: float = Column(Float, default=0)
+    viewport_long: float = Column(Float, default=0)
+    viewport_name: str = Column(String)
+    image_full_width: float = Column(Float)
+    image_full_height: float = Column(Float)
+    image_cropped_width: float = Column(Float)
+    image_cropped_height: float = Column(Float)
+    image_cropped_x: float = Column(Float)
+    image_cropped_y: float = Column(Float)
 
     def image_path(self):
         return f"image/{self.id}{self.image_suffix}"
@@ -36,10 +41,12 @@ class Panorama(Base):
 
     def export_to_client(self):
         return {
-            **{k:getattr(self, k) for k in ["id", "name", "viewport_lat", "viewport_long", "viewport_width_deg", "viewport_height_deg"]},
+            **{k:getattr(self, k) for k in [
+                "id", "name", "viewport_lat", "viewport_long", "viewport_name", 
+                "image_full_width", "image_full_height", "image_cropped_width", "image_cropped_height", "image_cropped_x", "image_cropped_y"]},
             "user": self.user.export_to_client(),
             "url": self.url(),
-            "image_url": self.image_url()
+            "image_url": self.image_url(),
         }
 
 class WhitelistedEmail(Base):

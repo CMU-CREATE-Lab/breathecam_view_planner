@@ -96,7 +96,10 @@
 </div>
 <div id="mainarea">
 <div id="panopane">
-<div id="panoheader"></div>
+<div id="panoheader">
+    <span id="panoname"></span>
+    <button style="float: right; display: none" id="delete">Delete</button>
+</div>
 <div id="panoviewer"></div>
 </div>
 <div id="sidebar">
@@ -127,18 +130,8 @@
 </body>
 <script type="module">
     import { init } from "/dist/index.js";
-    var panorama = {{ (panorama and panorama.export_to_client())|tojson|safe }}; 
-    var yoyodyne;
-    init(panorama);
-    // async function init() {
-    //     await import("/dist/bundle.js");
-    //     console.log(index_ts_init);
-    //     index_ts_init(panorama);
-    // }
-    //init();
-    // const viewer = new PhotoSphereViewer.Viewer({
-    //   container: document.querySelector('#panoviewer'),
-    //   panorama: panorama.image_url
-    // });
+    var panorama = {{ (panorama and panorama.export_to_client())|tojson|safe }};
+    var fovs = {{ fovs|tojson|safe }};
+    init(panorama, fovs);
 </script>
 </html>

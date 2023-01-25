@@ -12,11 +12,21 @@ Phase 2: Upload panorama and view it
     DONE Create list of panoramas on main page
     DONE Select on list to switch panoramas
     DONE Import panorama viewer
-    Following link to pano, if login required, redirect back to that pano
+    DONE Add email whitelist
+    DONE Try upload insta360 pano
+    DONE Redirect to pano upon upload (causing also the directory of panos to update on the right)
+    DONE Delete pano with confirmation
+    DONE Following link to pano, if login required, redirect back to that pano
+    Upload all images from last week
+
 
 Phase 3: Select panorama default orientation and create overlay polygons
-
-    Implement email whitelist
+    Read spreadsheet
+    Dropdown with all cam configs
+    Draw rectangle at 0,0
+    Move rectangle
+    Save / revert
+    Exif for fov for single images
     Force 2x1, >100px
 
 DONE Phase 1:
