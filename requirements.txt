@@ -1,0 +1,7 @@
+Flask
+Flask-Login
+requests
+oauthlib
+SQLAlchemy
+psycopg2-binary
+pandas

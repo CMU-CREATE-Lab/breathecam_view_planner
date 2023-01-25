@@ -1,4 +1,4 @@
-import base64, exif, exifutil, flask, flask_login, json, mimetypes, os, requests, struct, threading, time
+import base64, exifutil, flask, flask_login, json, mimetypes, os, requests, struct, threading, time
 from flask import abort, request, redirect, Response, send_from_directory
 from flask_login import current_user, login_required
 from google_login import GoogleLogin
