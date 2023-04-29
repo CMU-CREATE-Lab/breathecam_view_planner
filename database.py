@@ -1,4 +1,4 @@
-import flask_login
+import flask_login, os, threading, time
 from sqlalchemy import Column, Integer, String, Float, Identity, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship, scoped_session, sessionmaker
 from utils import epsql
@@ -14,23 +14,27 @@ Base.query = db_session.query_property()
 class Panorama(Base):
     __tablename__ = "panoramas"
 
-    id: int = Column(Integer, Identity(always=True), primary_key=True) # autoincrement
-    name: str = Column(String, nullable=False)
-    image_suffix: str = Column(String, nullable=False)
-    image_mime_type: str = Column(String, nullable=False)
-    user_id: str = Column(String, ForeignKey("users.id"))
-    user = relationship("User")
-    viewport_lat: float = Column(Float, default=0)
-    viewport_long: float = Column(Float, default=0)
-    viewport_name: str = Column(String)
-    image_full_width: float = Column(Float)
-    image_full_height: float = Column(Float)
-    image_cropped_width: float = Column(Float)
-    image_cropped_height: float = Column(Float)
-    image_cropped_x: float = Column(Float)
-    image_cropped_y: float = Column(Float)
+    id: int = Column(Integer, Identity(always=True), primary_key=True) # type: ignore
+    name: str = Column(String, nullable=False) # type: ignore
+    image_suffix: str = Column(String, nullable=False) # type: ignore
+    image_mime_type: str = Column(String, nullable=False) # type: ignore
+    user_id: str = Column(String, ForeignKey("users.id")) # type: ignore
+    user = relationship("User") # type: ignore
+    viewport_lat: float = Column(Float, default=0) # type: ignore
+    viewport_long: float = Column(Float, default=0) # type: ignore
+    viewport_name: str = Column(String) # type: ignore
+    image_full_width: float = Column(Float) # type: ignore
+    image_full_height: float = Column(Float) # type: ignore
+    image_cropped_width: float = Column(Float) # type: ignore
+    image_cropped_height: float = Column(Float) # type: ignore
+    image_cropped_x: float = Column(Float) # type: ignore
+    image_cropped_y: float = Column(Float) # type: ignore
 
-    def image_path(self):
+    @staticmethod
+    def generate_tmp_image_path(image_suffix: str) -> str:
+        return f"image/tmp-{os.getpid()}-{threading.get_ident}-{time.time_ns()}{image_suffix}"
+
+    def image_path(self) -> str:
         return f"image/{self.id}{self.image_suffix}"
 
     def image_url(self):
@@ -52,14 +56,14 @@ class Panorama(Base):
 class WhitelistedEmail(Base):
     __tablename__ = "whitelisted_emails"
 
-    email: str = Column(String, primary_key=True)
+    email: str = Column(String, primary_key=True) # type: ignore
 
 class User(Base, flask_login.UserMixin):
     __tablename__ = "users"
 
-    id: str = Column(String, primary_key=True)
-    name: str = Column(String, nullable=False)
-    email: str = Column(String, nullable=False)
+    id: str = Column(String, primary_key=True) # type: ignore
+    name: str = Column(String, nullable=False) # type: ignore
+    email: str = Column(String, nullable=False) # type: ignore
 
     def export_to_client(self):
         return {k:getattr(self, k) for k in ["id", "name", "email"]}

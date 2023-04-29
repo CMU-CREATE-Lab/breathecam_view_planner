@@ -19,7 +19,7 @@ def get_google_provider_cfg():
     return requests.get("https://accounts.google.com/.well-known/openid-configuration").json()
 
 class GoogleLogin:
-    def __init__(self, app: flask.Flask, login_manager, email_whitelist: None):
+    def __init__(self, app: flask.Flask, login_manager, email_whitelist = None):
         self.app = app
         self.login_manager = login_manager
         self.email_whitelist = email_whitelist

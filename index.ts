@@ -197,14 +197,19 @@ export function init(panorama : PanoramaExport | null, fovs: FovDef[]) {
     console.log("panoData:", panoData);
 
     if (panorama) {
+        console.log("about to make viewer");
         const viewer = new PhotoSphereViewer.Viewer({
             container: 'panoviewer',
             panorama: panorama.image_url,
             panoData: panoData
         });
+        console.log("getting panoname");
         requireElementIdType("panoname", HTMLSpanElement).innerText = `${panorama.name} (id ${panorama.id})`;
+        console.log("getting delete");
         let deleteButton = requireElementIdType("delete", HTMLButtonElement);
+        console.log("getting click");
         deleteButton.addEventListener("click", deletePanorama);
+        console.log("display inline");
         deleteButton.style.display = "inline";
     }
 }

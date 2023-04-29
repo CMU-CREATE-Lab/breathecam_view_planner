@@ -17,6 +17,9 @@ dev: port 5051
 
     pip install -r requirements.txt
 
+    ln -s ../image .
+    
+
 
 
 # Running dev

@@ -17,7 +17,20 @@ Phase 2: Upload panorama and view it
     DONE Redirect to pano upon upload (causing also the directory of panos to update on the right)
     DONE Delete pano with confirmation
     DONE Following link to pano, if login required, redirect back to that pano
-    Upload all images from last week
+    DONE Get running in production from shell
+    DONE Get running in production from crontab
+    Git commit
+
+Phase 3:
+    Get iter002 working with -dev
+    Parameterize port number for run.sh?
+    Update to most recent utils and add psql_utils
+    Redirect to login page when needed
+    Recreate redirect back to pano that was linked to when not yet logged in
+    Upload any remaining images from Center Township
+    Upload all images from WA county
+    Better diagnostics if webgl doesn't work
+    
 
 
 Phase 3: Select panorama default orientation and create overlay polygons

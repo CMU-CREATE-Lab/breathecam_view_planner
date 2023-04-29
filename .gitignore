@@ -8,3 +8,5 @@ reference
 backup
 dist
 samples
+gunicorn-error.log
+
